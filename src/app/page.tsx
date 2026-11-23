@@ -1,484 +1,1000 @@
-import { Mail, Phone, MapPin, Github, User, GraduationCap, LampDesk, FolderGit, UserRound, UsersRound, Swords, Globe, Star} from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+  User,
+  GraduationCap,
+  LampDesk,
+  FolderGit,
+  UserRound,
+  UsersRound,
+  Swords,
+  Globe,
+  Star,
+  ExternalLink,
+  Code2,
+  Layers,
+  Terminal,
+  Cpu,
+  Award,
+  CheckCircle2,
+  BookOpen,
+  Sparkles,
+  Calendar,
+  Users,
+  ArrowUpRight,
+} from "lucide-react";
+
+type Project = {
+  id: string;
+  name: string;
+  subtitle: string;
+  category: "personal" | "group";
+  categoryLabel: string;
+  date: string;
+  members: string;
+  role: string;
+  featured?: boolean;
+  stack: string[];
+  description: string;
+  tasks: string[];
+  github: string;
+  domain?: string;
+};
+
+const PROJECTS: Project[] = [
+  {
+    id: "harmony-music",
+    name: "Harmony Music",
+    subtitle: "AIピアノカバー自動生成＆楽譜作成スタジオ",
+    category: "personal",
+    categoryLabel: "個人開発",
+    date: "10/2026 – 11/2026",
+    members: "1名",
+    role: "フルスタック・AIアプリケーション開発者",
+    featured: true,
+    stack: [
+      "Python",
+      "FastAPI",
+      "PyTorch",
+      "TypeScript",
+      "React Native",
+      "Expo",
+      "Verovio",
+    ],
+    description:
+      "ポピュラー楽曲の音源からピアノカバーMIDIおよび五線譜（MusicXML）を自動生成するアプリケーションです。自動採譜エンジン（tsumugi）と約3,000時間のピアノ演奏データで事前学習した自己回帰Transformerモデルを組み合わせ、原曲のタイムラインと完全同期した自然なピアノアレンジを生成します。専用UI「Cover Studio」では、ピアノロール表示、原曲との同期再生、アレンジ強度・音域・ダイナミクスの調整、任意区間からの部分再生成（インペインティング）、ブラウザ内での楽譜レンダリング・PDF出力が可能です。",
+    tasks: [
+      "Global/Localの2段階自己回帰Transformerモデルによるピアノ編曲生成パイプラインの実装",
+      "FastAPIによる推論バックエンドAPIおよびマルチトラック音源採譜ワーカーの構築",
+      "Expo（Web / iOS / Android対応）を用いたCover Studio UIとピアノロール・同期再生プレイヤーの開発",
+      "演奏MIDIからピアノ大譜表（MusicXML）への自動変換とVerovioによるブラウザ内楽譜描画機能の実装",
+    ],
+    github: "https://github.com/sisternia/harmony-music",
+  },
+  {
+    id: "tour-mate",
+    name: "TourMate",
+    subtitle: "AIチャットボット搭載スマート旅行予約プラットフォーム",
+    category: "group",
+    categoryLabel: "チーム開発",
+    date: "4/2026 – 5/2026",
+    members: "2名",
+    role: "フルスタック開発者",
+    featured: true,
+    stack: [
+      "React Native",
+      "Expo",
+      "TypeScript",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "LangChain",
+      "VNPAY",
+    ],
+    description:
+      "モバイルアプリ（tour-mate）とバックエンド管理システム（tour-server）で構成されるスマート旅行予約プラットフォームです。ツアーの検索・予約・カスタムツアー作成・ガイド管理・レビュー機能に加え、MongoDB Atlas Vector SearchとLLM（Google Gemini / Groq Llama 3.3）を組み合わせたAI RAGチャットボットを搭載し、ユーザーの希望や予算に応じた最適なツアー提案からVNPAYオンライン決済までを一貫してサポートします。",
+    tasks: [
+      "React Native (Expo Router) を用いたクロスプラットフォーム対応モバイルアプリUI/UXの設計・開発",
+      "Node.js / Express と MongoDB によるRESTful API設計およびツアー・予約・ガイド管理機能の構築",
+      "MongoDB Atlas Vector Search と LangChain (Gemini / Groq) を活用したAI RAG旅行相談チャットボットの実装",
+      "VNPAY決済ゲートウェイ連携、Cloudinary画像管理、Nodemailerによる自動メール通知機能の導入",
+    ],
+    github: "https://github.com/sisternia/tour",
+  },
+  {
+    id: "nihongo-flashcard",
+    name: "Nihongo Flashcard",
+    subtitle: "忘却曲線に基づく日本語語彙・漢字学習プラットフォーム",
+    category: "group",
+    categoryLabel: "チーム開発",
+    date: "6/2025 – 8/2025",
+    members: "4名",
+    role: "フルスタック開発者",
+    featured: true,
+    stack: [
+      "React Native",
+      "Node.js",
+      "JavaScript",
+      "MySQL",
+      "AWS",
+      "Nginx",
+      "HTML/CSS",
+    ],
+    description:
+      "日本語学習者向けに単語や漢字を効率よく定着させるフラッシュカード学習アプリです。音声再生、例文確認、4択クイズ、書き取り練習など多様な学習モードを備え、忘却曲線アルゴリズムに基づく復習スケジューリングによって長期記憶への定着を促します。",
+    tasks: [
+      "ユーザー認証および個人の学習進捗・復習サイクル管理機能の開発",
+      "React NativeフロントエンドとNode.jsバックエンドAPIの設計・連携",
+      "AWSおよびNginxを用いた本番クラウドインフラ環境の構築・デプロイ",
+      "フラッシュカード学習モードとクイズUIのレスポンス・操作性の最適化",
+    ],
+    github: "https://github.com/sisternia/flash-card",
+    domain: "https://www.nihonflashcard.live/",
+  },
+  {
+    id: "acroom",
+    name: "ACRoom",
+    subtitle: "WebRTCを用いたリアルタイムビデオ会議デスクトップアプリ",
+    category: "personal",
+    categoryLabel: "個人開発",
+    date: "9/2024 – 12/2024",
+    members: "3名",
+    role: "フルスタック開発者",
+    stack: ["Node.js", "ElectronJS", "WebRTC", "MongoDB", "Bootstrap"],
+    description:
+      "リアルタイムでオンライン会議を開催・参加できるデスクトップアプリケーションです。低遅延かつ高品質な音声・映像通信を実現し、会議ルームの作成・検索、スケジュール設定、参加者間のスムーズなコミュニケーションをシンプルな操作性で提供します。",
+    tasks: [
+      "会議ルームの作成・検索・入退室管理およびスケジュール設定機能の実装",
+      "WebRTCを用いたピアツーピアのリアルタイム音声・映像通信処理の開発",
+      "MongoDBを用いたユーザーアカウントおよび会議履歴データの管理",
+      "ElectronJSによるクロスプラットフォーム対応デスクトップUIの最適化",
+    ],
+    github: "https://github.com/sisternia/RTC",
+  },
+  {
+    id: "hotel-booking",
+    name: "Hotel Booking",
+    subtitle: "宿泊施設検索・料金比較・オンライン予約システム",
+    category: "group",
+    categoryLabel: "チーム開発",
+    date: "9/2023 – 12/2023",
+    members: "2名",
+    role: "フルスタック開発者",
+    stack: ["PHP", "MySQL", "Ajax", "CSS"],
+    description:
+      "旅行や出張時の宿泊先探しを効率化するホテル予約Webアプリケーションです。予算・設備条件・エリアによる詳細なフィルタリング機能、料金比較、直前割引やクーポンの適用、宿泊者のレビュー・評価機能を備え、安心かつスムーズな宿泊予約体験を提供します。",
+    tasks: [
+      "予約管理フローおよび顧客・客室データベースの設計",
+      "レスポンシブなフロントエンドUIの設計・実装",
+      "Ajaxを用いたページ遷移なしの非同期検索・フィルタリング処理の実装",
+      "MySQLによる予約在庫・ユーザー・レビュー情報のデータ管理",
+    ],
+    github: "https://github.com/sisternia/hotel_booking",
+  },
+  {
+    id: "doctor-call",
+    name: "Doctor Call",
+    subtitle: "オンライン診療予約＆ビデオ遠隔医療モバイルアプリ",
+    category: "group",
+    categoryLabel: "チーム開発",
+    date: "2/2023 – 5/2023",
+    members: "2名",
+    role: "フルスタック開発者",
+    stack: ["Flutter", "Dart", "Laravel", "PHP", "MySQL"],
+    description:
+      "専門診療科ごとの医師検索から診察日時の予約、ビデオ通話によるオンライン遠隔診療までをワンストップで行えるヘルスケアアプリです。自宅にいながら医師の診察や健康相談を受けられる直感的なインターフェースを実現しました。",
+    tasks: [
+      "Flutterを用いたモバイルアプリのUI/UX設計と画面実装",
+      "医師検索・診療スケジュール予約・通知機能の開発",
+      "LaravelによるバックエンドREST APIの構築",
+      "MySQLを用いた患者カルテ・医師プロフィール・予約データの管理",
+    ],
+    github: "https://github.com/sisternia/medical_app",
+  },
+  {
+    id: "crud-books",
+    name: "Crud Books",
+    subtitle: "Java & SQL Serverによる書籍蔵書管理システム",
+    category: "personal",
+    categoryLabel: "個人開発",
+    date: "9/2022 – 11/2022",
+    members: "1名",
+    role: "フルスタック開発者",
+    stack: ["Java", "SQL Server"],
+    description:
+      "書籍情報の登録・編集・削除・検索を効率的に行うデスクトップ蔵書管理アプリケーションです。直感的で分かりやすい画面構成により、蔵書データの素早い検索やカテゴリ別フィルタリングをシンプルに行えます。",
+    tasks: [
+      "リレーショナルデータベース（SQL Server）のスキーマ設計およびテーブル構築",
+      "Javaを用いた書籍データのCRUD（登録・参照・更新・削除）機能の開発",
+      "キーワード検索・条件フィルタリング機能の実装",
+      "操作ミスを防ぐUIデザインとユーザビリティの改善",
+    ],
+    github: "https://github.com/sisternia/crud_books",
+  },
+];
+
+const SKILL_GROUPS = [
+  {
+    category: "プログラミング言語",
+    code: "LANGUAGES",
+    icon: Terminal,
+    skills: ["TypeScript", "JavaScript", "Python", "PHP", "Dart", "Java", "C++"],
+  },
+  {
+    category: "フロントエンド・モバイル",
+    code: "FRONTEND & MOBILE",
+    icon: Code2,
+    skills: [
+      "Next.js",
+      "React Native",
+      "Expo",
+      "Flutter",
+      "ElectronJS",
+      "Tailwind CSS",
+      "Bootstrap",
+    ],
+  },
+  {
+    category: "バックエンド・データベース",
+    code: "BACKEND & DB",
+    icon: Layers,
+    skills: [
+      "Node.js / Express",
+      "FastAPI",
+      "Laravel",
+      "MongoDB",
+      "MySQL",
+      "SQL Server",
+    ],
+  },
+  {
+    category: "クラウド・AI・ツール",
+    code: "CLOUD, AI & TOOLS",
+    icon: Cpu,
+    skills: [
+      "AWS / Nginx",
+      "Git / GitHub",
+      "PyTorch / TensorFlow",
+      "LangChain / RAG",
+      "REST API",
+      "WebRTC / Socket.IO",
+    ],
+  },
+];
+
+const ACHIEVEMENTS = [
+  {
+    title: "Robo Car - VKUコンテスト（2024）",
+    award: "奨励賞",
+    date: "4/2024 – 6/2024",
+    description:
+      "自動走行車およびリモート操作車を設計・開発し、他チームと走行性能を競う学内技術コンテストです。コース上でのスピードや車体安定性に加え、センサー制御プログラムの精度やアルゴリズムの工夫が評価されました。チームメンバーと連携して制御ロジックを最適化し、安定した走行パフォーマンスを実現しました。",
+  },
+  {
+    title: "Best Web Design (BWD) VKUコンテスト",
+    award: "3位受賞",
+    date: "6/2023 – 8/2023",
+    description:
+      "大学内で毎年開催されるWebデザイン・開発競技会です。情報設計の美しさ、ユーザーインターフェースの使いやすさ、そしてフロントエンド実装の完成度が総合的に審査されました。チームで協力してアイデアを形にし、高いUI/UX品質を実現して3位に入賞しました。",
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="space-y-10 p-2">
-      {/* Thông tin cá nhân */}
-      <section className="p-6 bg-gray-900 rounded-xl">
-        <h1 className="text-3xl font-bold mb-6 text-white">グエン・ディン・アン・ヴー</h1>
+  const [filter, setFilter] = useState<"all" | "personal" | "group">("all");
 
-        <div className="grid md:grid-cols-4 gap-4">
-          {/* Email */}
-          <div className="flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-md shadow-sm text-sm text-black">
-            <Mail size={16} className="text-red-600 shrink-0" />
+  const filteredProjects = PROJECTS.filter((p) => {
+    if (filter === "all") return true;
+    return p.category === filter;
+  });
+
+  const personalCount = PROJECTS.filter((p) => p.category === "personal").length;
+  const groupCount = PROJECTS.filter((p) => p.category === "group").length;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* =====================================================================
+          LEFT SIDEBAR: Profile, Contact, Stats, Education, Languages, Hobbies
+      ====================================================================== */}
+      <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-20">
+        {/* Profile Card */}
+        <section className="bg-white border border-stone-200/90 rounded-2xl overflow-hidden shadow-xs">
+          {/* Dark Charcoal Header Banner */}
+          <div className="bg-[#1C1917] text-stone-100 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <span
+                style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-stone-800 text-stone-300 border border-stone-700"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                OPEN TO OPPORTUNITIES
+              </span>
+              <span
+                style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                className="text-xs text-stone-400"
+              >
+                VN / JP
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-[26px] font-bold tracking-tight text-white leading-snug">
+              グエン・ディン・アン・ヴー
+            </h1>
+            <p className="text-sm text-stone-400 mt-1 font-medium">
+              Nguyễn Đình Anh Vũ
+            </p>
+            <p className="text-xs text-stone-300 mt-3 pt-3 border-t border-stone-800 flex items-center gap-2">
+              <Code2 size={14} className="text-amber-500 shrink-0" />
+              <span>フルスタックエンジニア（Web・モバイル・AI）</span>
+            </p>
+          </div>
+
+          {/* Quick Metrics Strip */}
+          <div className="grid grid-cols-3 divide-x divide-stone-200 border-b border-stone-200 bg-stone-50/70">
+            <div className="p-3.5 text-center">
+              <p
+                style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                className="text-lg font-bold text-stone-900"
+              >
+                {PROJECTS.length}
+              </p>
+              <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                開発プロジェクト
+              </p>
+            </div>
+            <div className="p-3.5 text-center">
+              <p
+                style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                className="text-lg font-bold text-stone-900"
+              >
+                3.2<span className="text-xs font-normal text-stone-500">/4.0</span>
+              </p>
+              <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                大学 GPA
+              </p>
+            </div>
+            <div className="p-3.5 text-center">
+              <p
+                style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                className="text-lg font-bold text-stone-900"
+              >
+                JLPT N3
+              </p>
+              <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                日本語レベル
+              </p>
+            </div>
+          </div>
+
+          {/* Contact Info List */}
+          <div className="p-5 space-y-3 text-sm">
             <a
               href="mailto:vu784512000@gmail.com"
-              className="hover:underline whitespace-nowrap"
+              className="flex items-center gap-3 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200/70 transition-colors group"
             >
-              vu784512000@gmail.com
+              <div className="w-8 h-8 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-stone-700 group-hover:text-amber-800 shrink-0">
+                <Mail size={15} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-stone-500 font-medium">メール</p>
+                <p
+                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                  className="text-xs font-medium text-stone-900 truncate"
+                >
+                  vu784512000@gmail.com
+                </p>
+              </div>
+              <ArrowUpRight
+                size={14}
+                className="text-stone-400 group-hover:text-stone-700 shrink-0"
+              />
             </a>
-          </div>
 
-          {/* Phone */}
-          <div className="flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-md shadow-sm text-sm text-black">
-            <Phone size={16} className="text-blue-600 shrink-0" />
-            <span className="whitespace-nowrap">0905 307 261</span>
-          </div>
+            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
+              <div className="w-8 h-8 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-stone-700 shrink-0">
+                <Phone size={15} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-stone-500 font-medium">電話番号</p>
+                <p
+                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                  className="text-xs font-medium text-stone-900"
+                >
+                  0905 307 261
+                </p>
+              </div>
+            </div>
 
-          {/* Github */}
-          <div className="flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-md shadow-sm text-sm text-black">
-            <Github size={16} className="text-gray-800 shrink-0" />
             <a
               href="https://github.com/sisternia"
-              className="hover:underline whitespace-nowrap"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200/70 transition-colors group"
             >
-              github.com/sisternia
+              <div className="w-8 h-8 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-stone-700 group-hover:text-stone-950 shrink-0">
+                <Github size={15} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-stone-500 font-medium">GitHub</p>
+                <p
+                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                  className="text-xs font-medium text-stone-900 truncate"
+                >
+                  github.com/sisternia
+                </p>
+              </div>
+              <ArrowUpRight
+                size={14}
+                className="text-stone-400 group-hover:text-stone-700 shrink-0"
+              />
             </a>
-          </div>
 
-          {/* Address */}
-          <div className="flex items-start gap-2 bg-gray-50 p-3 rounded-md shadow-sm text-sm text-black">
-            <MapPin size={16} className="text-green-600 shrink-0 mt-1" />
-            <div className="flex flex-col">
-              <span>ザライ省、プレイク市</span>
-              <div className="flex justify-between w-full">
-                <span>タン・ロイ区</span>
-                <span>ベトナム</span>
+            <div className="flex items-start gap-3 p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
+              <div className="w-8 h-8 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-stone-700 shrink-0 mt-0.5">
+                <MapPin size={15} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-stone-500 font-medium">所在地</p>
+                <p className="text-xs font-medium text-stone-900 leading-relaxed">
+                  ベトナム・ザライ省プレイク市タン・ロイ区
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Tổng quan */}
-      <section className="p-6 bg-white shadow rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <User className="w-6 h-6" />
-          専門概要
-        </h2>
-        <p className="text-lg text-justify leading-relaxed">
-        私は現在大学4年生で、NextJSやReact Native、Flutterを使ったWebおよびモバイルアプリ開発に力を入れています。フロントエンドだけでなく、LaravelやPHP、NodeJSを使ったバックエンド開発にも取り組み、AWSを活用したインフラ設計・構築の経験も積んでいます。これまでにユーザーフレンドリーで機能的なアプリケーションを複数開発し、技術力だけでなく、実践的な問題解決能力やチームでのコミュニケーション力も養ってきました。<br></br>
-
-        御社のニアショア開発や多様な案件に参加することで、さらにスキルを磨き、社会に貢献できるエンジニアを目指しています。積極的に学び続け、チームの一員として成果を出すことを大切にしています。
-        </p>
-      </section>
-
-      {/* Học vấn */}
-      <section className="p-6 bg-white shadow rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <GraduationCap className="w-6 h-6" />
-          学歴
-        </h2>
-        <div className="space-y-2">
-          {/* Bằng cấp + Thời gian */}
-          <div className="flex justify-between text-lg font-semibold">
-            <span>情報技術学士</span>
-            <span>2022年10月 ～ 現在</span>
+        {/* Education Card */}
+        <section className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+            <h2 className="text-base font-bold text-stone-900 flex items-center gap-2">
+              <GraduationCap className="w-4 h-4 text-amber-800" />
+              学歴
+            </h2>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-[11px] font-medium text-stone-500 bg-stone-100 px-2 py-0.5 rounded"
+            >
+              2022.10 – 現在
+            </span>
           </div>
 
-          {/* Trường */}
-          <p className="text-base">ベトナム・韓国IT通信大学</p>
-
-          {/* GPA */}
-          <p className="text-base">GPA：3.2 / 4.0</p>
-
-          {/* Chuyên ngành */}
-          <p className="text-base">専攻：情報技術</p>
-
-          {/* Năm học */}
-          <p className="text-base">学年：4年</p>
-        </div>
-      </section>
-
-      {/* Kỹ năng */}
-      <section className="p-6 bg-white shadow rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <LampDesk className="w-6 h-6" />
-          専門スキル
-        </h2>
-        <div className="space-y-6 text-lg">
-          {/* Ngôn ngữ lập trình */}
-          <div>
-            <h3 className="font-semibold text-xl mb-2">プログラミング言語</h3>
-            <div className="flex flex-wrap gap-2">
-              {["C++", "Java", "Python", "PHP", "Dart", "JavaScript", "TypeScript"].map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1 bg-gray-100 rounded-full shadow-sm text-sm"
-                >
-                  {skill}
-                </span>
-              ))}
+          <div className="space-y-3">
+            <div>
+              <h3 className="font-bold text-stone-900 text-sm">
+                ベトナム・韓国IT通信大学 (VKU)
+              </h3>
+              <p className="text-xs text-stone-600 mt-0.5">
+                情報技術学士（専攻：情報技術）
+              </p>
             </div>
-          </div>
 
-          {/* Frontend */}
-          <div>
-            <h3 className="font-semibold text-xl mb-2">フロントエンド</h3>
-            <div className="flex flex-wrap gap-2">
-              {["Next.js", "React Native", "Bootstrap", "Flutter", "ElectronJS"].map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1 bg-blue-50 rounded-full shadow-sm text-sm"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Backend */}
-          <div>
-            <h3 className="font-semibold text-xl mb-2">バックエンド</h3>
-            <div className="flex flex-wrap gap-2">
-              {["Laravel", "ExpressJS", "MongoDB", "MySQL", "SQL Server"].map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1 bg-green-50 rounded-full shadow-sm text-sm"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Tools & Khác */}
-          <div>
-            <h3 className="font-semibold text-xl mb-2">ツール＆その他</h3>
-            <div className="flex flex-wrap gap-2">
-              {["AWS", "Git / GitHub", "REST API", "WebRTC", "Socket.IO", "TensorFlow"].map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1 bg-yellow-50 rounded-full shadow-sm text-sm"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Dự án */}
-      <section className="p-6 bg-white shadow rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <FolderGit className="w-6 h-6" />
-          主なプロジェクト
-        </h2>
-        <div className="space-y-8">
-          {/* 個人 */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <UserRound className="w-6 h-6" />
-              個人
-            </h3>
-            <div className="space-y-4">
-              {[
-                {
-                  name: "Crud Books",
-                  date: "9/2022 – 11/2022",
-                  members: "1名",
-                  role: "フルスタック開発者",
-                  stack: ["Java", "SQLServer"],
-                  description:
-                    "こちらはJavaで作られた本の管理アプリケーションです。簡単に本の情報を追加・編集・削除できます。シンプルで使いやすいアプリです。こちらはJavaで作られた本の管理アプリで、基本的な追加・編集・削除の機能があります。シンプルで使いやすいです。",
-                  tasks: [
-                    "データベース設計およびテーブル構築",
-                    "書籍のCRUD機能を開発",
-                    "検索・フィルタリング機能の実装",
-                    "UIデザインとユーザビリティ改善"
-                  ],
-                  github: "https://github.com/sisternia/crud_books"
-                },
-                {
-                  name: "ACRoom",
-                  date: "9/2024 – 12/2024",
-                  members: "3名",
-                  role: "フルスタック開発者",
-                  stack: ["NodeJS", "ElectronJS", "Bootstrap", "WebRTC", "MongoDB"],
-                  description:
-                    "ACRoomは直接会議用のアプリケーションです。このアプリでは、リアルタイムで会議を開催し、参加者が簡単に接続して交流できます。操作がシンプルで使いやすく、音声や映像の品質も良いです。会議のスケジュール設定や管理も可能です。ACRoomは直接会議用のアプリケーションです。このアプリでは、リアルタイムで会議を開催し、参加者が簡単に接続して交流できます。操作がシンプルで使いやすく、音声や映像の品質も良いです。会議のスケジュール設定や管理も可能です。",
-                  tasks: [
-                    "会議室作成・検索機能の実装",
-                    "WebRTCを用いたリアルタイム通信開発",
-                    "MongoDBでユーザーデータ管理",
-                    "UI最適化とクロスプラットフォーム対応"
-                  ],
-                  github: "https://github.com/sisternia/RTC"
-                }
-              ].map((project) => (
-                <div key={project.name} className="p-4 bg-gray-50 rounded-lg shadow-sm">
-                  <div className="flex justify-between items-center mb-2">
-                    <h4 className="font-bold">{project.name}</h4>
-                    <span className="text-sm text-blue-600 font-semibold px-2 py-1 bg-white rounded shadow">
-                      {project.date} <span className="ml-2">{project.members}</span>
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between mt-2 gap-4">
-                    <div className="w-1/3 p-2 bg-white border rounded-lg shadow-sm">
-                      <p className="text-base font-semibold">役割:</p>
-                      <p className="mt-1">{project.role}</p>
-                    </div>
-                    <div className="flex-1 p-2 bg-white border rounded-lg shadow-sm">
-                      <p className="text-base font-semibold">技術スタック:</p>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {project.stack.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-3 py-1 bg-yellow-50 rounded-full shadow-sm text-sm"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-3">{project.description}</p>
-
-                  <div className="mt-3 p-3 bg-white border rounded-lg shadow-sm">
-                    <p className="font-semibold">主な業務:</p>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
-                      {project.tasks.map((task) => (
-                        <li key={task}>{task}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-3 p-3 bg-white border rounded-lg shadow-sm">
-                    <p className="font-semibold">GitHub</p>
-                    <a
-                      href={project.github}
-                      className="text-blue-600 hover:underline text-sm block mt-1"
-                      target="_blank"
-                    >
-                      {project.github.replace("https://", "")}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* グループ */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <UsersRound className="w-6 h-6" />
-              グループ
-            </h3>
-            <div className="space-y-4">
-              {[
-                {
-                  name: "Hotel Booking",
-                  date: "9/2023 – 12/2023",
-                  members: "2名",
-                  role: "フルスタック開発者",
-                  stack: ["PHP", "CSS", "Ajax", "MySQL"],
-                  description:
-                    "ホテル予約アプリは、旅行や出張の際に便利なツールです。ユーザーは簡単にホテルの検索、料金比較、予約ができます。多くのアプリは多様なフィルター機能を備え、予算や好み、施設の条件に合った宿泊先を素早く見つけられます。また直前割引やクーポンも利用可能でお得に予約できます。さらに、レビューや評価を参考に、安心して宿泊先を選べます。これにより、快適でスムーズな旅の計画をサポートします。",
-                  tasks: [
-                    "予約システムと顧客管理の設計",
-                    "フロントエンドUI開発",
-                    "Ajaxによる非同期通信の実装",
-                    "MySQLを用いたデータ管理"
-                  ],
-                  github: "https://github.com/sisternia/hotel_booking"
-                },
-                {
-                  name: "Doctor Call",
-                  date: "2/2023 – 5/2023",
-                  members: "2名",
-                  role: "フルスタック開発者",
-                  stack: ["Dart", "PHP", "Flutter", "Laravel", "MySQL"],
-                  description:
-                    "Doctor Callは、ユーザーが医師の診察予約を簡単にできるアプリケーションです。専門分野ごとに医師を検索し、診察日時や場所を選択して予約ができます。ビデオ通話による遠隔診療も可能で、自宅にいながら医師の診察や相談を受けられる便利なサービスです。シンプルで使いやすく、ユーザーの健康管理をサポートします。",
-                  tasks: [
-                    "モバイルUI/UX設計",
-                    "予約機能の開発",
-                    "バックエンドAPI開発（Laravel）",
-                    "MySQLで患者・医師データ管理"
-                  ],
-                  github: "https://github.com/sisternia/medical_app"
-                },
-                {
-                  name: "Nihongo Flashcard",
-                  date: "6/2025 – 8/2025",
-                  members: "4名",
-                  role: "フルスタック開発者",
-                  stack: ["HTML", "CSS", "JS", "NodeJS", "React Native", "MySQL", "Nginx", "AWS"],
-                  description:
-                    "Nihongo Flashcardは、日本語学習者向けのアプリで、単語や漢字を効率よく覚えられるフラッシュカード機能を提供します。音声、文章、クイズ、書き取り練習など多様な学習モードがあり、楽しく続けられます。AnkiやWanikaniなどの有名なアプリもあり、自分好みにカスタマイズできるものが多いです。これらは忘却曲線に基づく復習システムで、効率的に語彙や漢字の記憶を助けます。",
-                  tasks: [
-                    "ユーザー登録・学習進捗管理機能の開発",
-                    "フロントエンドReactとバックエンドAPI構築",
-                    "クラウド環境（AWS, Nginx）でのデプロイ",
-                    "Flashcard機能と学習体験の最適化"
-                  ],
-                  github: "https://github.com/sisternia/flash-card",
-                  domain: "https://www.nihonflashcard.live/"
-                }
-              ].map((project) => (
-                <div key={project.name} className="p-4 bg-gray-50 rounded-lg shadow-sm">
-                  <div className="flex justify-between items-center mb-2">
-                    <h4 className="font-bold">{project.name}</h4>
-                    <span className="text-sm text-blue-600 font-semibold px-2 py-1 bg-white rounded shadow">
-                      {project.date} <span className="ml-2">{project.members}</span>
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between mt-2 gap-4">
-                    <div className="w-1/3 p-2 bg-white border rounded-lg shadow-sm">
-                      <p className="text-base font-semibold">役割:</p>
-                      <p className="mt-1">{project.role}</p>
-                    </div>
-                    <div className="flex-1 p-2 bg-white border rounded-lg shadow-sm">
-                      <p className="text-base font-semibold">技術スタック:</p>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {project.stack.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-3 py-1 bg-yellow-50 rounded-full shadow-sm text-sm"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-3">{project.description}</p>
-
-                  <div className="mt-3 p-3 bg-white border rounded-lg shadow-sm">
-                    <p className="font-semibold">主な業務:</p>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
-                      {project.tasks.map((task) => (
-                        <li key={task}>{task}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-3 p-3 bg-white border rounded-lg shadow-sm">
-                    <p className="font-semibold">GitHub</p>
-                    <a
-                      href={project.github}
-                      className="text-blue-600 hover:underline text-sm block mt-1"
-                      target="_blank"
-                    >
-                      {project.github.replace("https://", "")}
-                    </a>
-                  </div>
-
-                  {project.domain && (
-                    <div className="mt-3 p-3 bg-white border rounded-lg shadow-sm">
-                      <p className="font-semibold">Domain</p>
-                      <a
-                        href={project.domain}
-                        className="text-green-600 hover:underline text-sm block mt-1"
-                        target="_blank"
-                      >
-                        {project.domain.replace("https://", "")}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hoạt động và thành tích */}
-      <section className="p-6 bg-white shadow rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Swords className="w-6 h-6" />
-          活動・実績
-        </h2>
-
-        <div className="space-y-6">
-          {[
-            {
-              name: "Best Web Design (BWD) VKUコンテスト - 3位受賞。",
-              date: "6/2023 – 8/2023",
-              description: `このコンテストは、大学内で毎年開催されるWebデザイン競技会です。  
-      デザインの美しさ、ユーザーインターフェースの使いやすさ、そして実装の完成度が評価されます。  
-      チームで協力して創造的なアイデアを形にし、優れたUX/UIを提供することを目指しました。`
-            },
-            {
-              name: "Robo Car - VKUコンテスト（2024）- 奨励賞。",
-              date: "4/2024 – 6/2024",
-              description: `自動走行車やリモート操作車を設計・開発し、他チームと競技するイベントです。  
-      コース上でのスピードや安定性だけでなく、制御プログラムの精度や創造的な工夫も評価対象となりました。  
-      チームメンバーと協力してアルゴリズムを最適化し、競争力のあるパフォーマンスを実現しました。`
-            }
-          ].map((item) => (
-            <div key={item.name} className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-2">
-                <h4 className="font-semibold">{item.name}</h4>
-                <span className="text-sm text-blue-600 font-semibold px-2 py-1 bg-white rounded shadow">
-                  {item.date}
-                </span>
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
+                <p className="text-[11px] text-stone-500">学年</p>
+                <p className="text-xs font-bold text-stone-900 mt-0.5">大学4年生</p>
               </div>
-              <p className="text-sm text-gray-700 whitespace-pre-line">{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Ngôn ngữ & Sở thích */}
-      <section className="p-6 bg-white shadow rounded-xl">
-
-        <div className="flex flex-wrap gap-6">
-          {/* Ngôn ngữ */}
-          <div className="flex-1 p-4 bg-gray-50 rounded-lg shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <Globe size={20} className="text-green-600" />
-              <h3 className="text-lg font-semibold">言語</h3>
-            </div>
-            <div className="space-y-2">
-              {[
-                { name: "ベトナム語", level: "ネイティブ" },
-                { name: "英語", level: "中級" },
-                { name: "日本語", level: "N3レベル" }
-              ].map((lang) => (
-                <div
-                  key={lang.name}
-                  className="flex justify-between items-center p-2 bg-white rounded-lg shadow-sm"
+              <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
+                <p className="text-[11px] text-stone-500">累積GPA</p>
+                <p
+                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                  className="text-xs font-bold text-stone-900 mt-0.5"
                 >
-                  <span className="text-sm font-medium">{lang.name}</span>
-                  <span className="px-3 py-1 bg-yellow-50 rounded-full shadow-sm text-sm">
+                  3.2 / 4.0
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Languages Card */}
+        <section className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+            <h2 className="text-base font-bold text-stone-900 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-amber-800" />
+              語学スキル
+            </h2>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-[10px] tracking-wider uppercase text-stone-400"
+            >
+              LANGUAGES
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { name: "ベトナム語", level: "ネイティブ", bar: "w-full" },
+              { name: "日本語", level: "JLPT N3レベル", bar: "w-3/4" },
+              { name: "英語", level: "中級（技術文書読解・日常会話）", bar: "w-2/3" },
+            ].map((lang) => (
+              <div
+                key={lang.name}
+                className="p-3 rounded-xl bg-stone-50 border border-stone-200/60"
+              >
+                <div className="flex justify-between items-center text-xs mb-1.5">
+                  <span className="font-bold text-stone-800">{lang.name}</span>
+                  <span className="font-medium text-stone-600 bg-white px-2 py-0.5 rounded border border-stone-200">
                     {lang.level}
                   </span>
                 </div>
-              ))}
+                <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                  <div className={`h-full bg-stone-800 rounded-full ${lang.bar}`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Hobbies & Interests Card */}
+        <section className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+            <h2 className="text-base font-bold text-stone-900 flex items-center gap-2">
+              <Star className="w-4 h-4 text-amber-800" />
+              趣味・関心
+            </h2>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-[10px] tracking-wider uppercase text-stone-400"
+            >
+              INTERESTS
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {[
+              "日本の音楽を聴くこと",
+              "外国語の学習",
+              "新しい技術のキャッチアップ",
+              "読書",
+              "チーム開発・人助け",
+            ].map((hobby) => (
+              <span
+                key={hobby}
+                className="px-3 py-1.5 bg-stone-50 border border-stone-200/80 text-stone-700 rounded-lg text-xs font-medium"
+              >
+                {hobby}
+              </span>
+            ))}
+          </div>
+        </section>
+      </aside>
+
+      {/* =====================================================================
+          RIGHT MAIN CONTENT: Overview, Skills Matrix, Projects, Achievements
+      ====================================================================== */}
+      <div className="lg:col-span-8 space-y-8">
+        {/* Professional Summary */}
+        <section
+          id="overview"
+          className="bg-white border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-xs scroll-mt-20"
+        >
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
+                <User className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-stone-900">
+                  専門概要
+                </h2>
+              </div>
+            </div>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-xs text-stone-400 tracking-wider uppercase"
+            >
+              01 / OVERVIEW
+            </span>
+          </div>
+
+          <div className="space-y-4 text-sm sm:text-base text-stone-700 leading-relaxed">
+            <p>
+              現在大学4年生として、
+              <strong className="font-semibold text-stone-900">
+                Next.js・React Native (Expo)・Flutter
+              </strong>
+              を用いたWebおよびクロスプラットフォームモバイルアプリ開発に注力しています。フロントエンドだけでなく、
+              <strong className="font-semibold text-stone-900">
+                Node.js (Express)・FastAPI・Laravel
+              </strong>
+              を活用したバックエンド設計、AWSやNginxによるクラウドインフラ構築、さらに
+              <strong className="font-semibold text-stone-900">
+                AIモデル連携（RAGチャットボットや音楽生成AI）
+              </strong>
+              まで一貫して手掛けています。
+            </p>
+            <p>
+              これまでに個人・チームで複数の実践的なアプリケーションを企画から実装・デプロイまで完遂し、技術力だけでなく課題解決力やチーム開発におけるコミュニケーション力を培ってきました。ニアショア開発をはじめ多様なプロジェクトに積極的に貢献し、ユーザーに価値を届けるエンジニアを目指しています。
+            </p>
+          </div>
+
+          {/* Core Focus Pillars */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-5 border-t border-stone-100">
+            <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
+              <p className="text-xs font-bold text-stone-900">
+                Web & モバイル開発
+              </p>
+              <p className="text-xs text-stone-600 mt-1">
+                Next.js / React Native / Flutter による直感的で高速なUI設計
+              </p>
+            </div>
+            <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
+              <p className="text-xs font-bold text-stone-900">
+                バックエンド & クラウド
+              </p>
+              <p className="text-xs text-stone-600 mt-1">
+                Node.js / FastAPI / Laravel / AWS による堅牢なAPI・インフラ構築
+              </p>
+            </div>
+            <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
+              <p className="text-xs font-bold text-stone-900">
+                AI・リアルタイム技術
+              </p>
+              <p className="text-xs text-stone-600 mt-1">
+                LangChain RAG・PyTorch音楽生成・WebRTC通信のシステム統合
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Technical Skills Matrix */}
+        <section
+          id="skills"
+          className="bg-white border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-xs scroll-mt-20"
+        >
+          <div className="flex items-center justify-between mb-6 pb-3 border-b border-stone-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
+                <LampDesk className="w-4 h-4" />
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-stone-900">
+                専門スキル
+              </h2>
+            </div>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-xs text-stone-400 tracking-wider uppercase"
+            >
+              02 / TECH STACK
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {SKILL_GROUPS.map((group) => {
+              const IconComponent = group.icon;
+              return (
+                <div
+                  key={group.category}
+                  className="p-4 rounded-xl bg-stone-50/80 border border-stone-200/80 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <IconComponent className="w-4 h-4 text-amber-800" />
+                        <h3 className="font-bold text-sm text-stone-900">
+                          {group.category}
+                        </h3>
+                      </div>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                        }}
+                        className="text-[10px] text-stone-400 font-medium"
+                      >
+                        {group.code}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {group.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          style={{
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                          }}
+                          className="px-2.5 py-1 bg-white border border-stone-200/90 rounded-md text-xs font-medium text-stone-800 shadow-2xs"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Projects Section */}
+        <section
+          id="projects"
+          className="bg-white border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-xs scroll-mt-20"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-stone-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
+                <FolderGit className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-stone-900">
+                  主なプロジェクト
+                </h2>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  個人開発およびチーム開発の主要プロダクト（全{PROJECTS.length}件）
+                </p>
+              </div>
+            </div>
+
+            {/* Category Filter Tabs */}
+            <div className="inline-flex p-1 rounded-xl bg-stone-100 border border-stone-200/80 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setFilter("all")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  filter === "all"
+                    ? "bg-stone-900 text-white shadow-2xs"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                すべて ({PROJECTS.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter("personal")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                  filter === "personal"
+                    ? "bg-stone-900 text-white shadow-2xs"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                <UserRound size={12} />
+                個人 ({personalCount})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter("group")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                  filter === "group"
+                    ? "bg-stone-900 text-white shadow-2xs"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                <UsersRound size={12} />
+                グループ ({groupCount})
+              </button>
             </div>
           </div>
 
-          {/* Sở thích */}
-          <div className="flex-1 p-4 bg-gray-50 rounded-lg shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <Star size={20} className="text-yellow-500" />
-              <h3 className="text-lg font-semibold">趣味</h3>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {[
-                "日本の歌をよく聞く",
-                "外国語を学ぶ",
-                "新しい技術を学ぶ",
-                "本をよむこと",
-                "人を助ける"
-              ].map((hobby) => (
-                <span
-                  key={hobby}
-                  className="px-3 py-1 bg-yellow-50 rounded-full shadow-sm text-sm"
-                >
-                  {hobby}
-                </span>
-              ))}
-            </div>
+          {/* Project Cards List */}
+          <div className="space-y-6">
+            {filteredProjects.map((project, index) => (
+              <article
+                key={project.id}
+                className={`rounded-2xl border transition-all overflow-hidden ${
+                  project.featured
+                    ? "bg-[#FAF9F6] border-stone-300 shadow-xs"
+                    : "bg-stone-50/60 border-stone-200/90"
+                }`}
+              >
+                {/* Project Card Top Header */}
+                <div className="p-5 sm:p-6 border-b border-stone-200/80 bg-white">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                        }}
+                        className="text-xs font-bold text-stone-400"
+                      >
+                        #{String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold border ${
+                          project.category === "personal"
+                            ? "bg-stone-100 text-stone-800 border-stone-300"
+                            : "bg-amber-950/5 text-amber-900 border-amber-800/20"
+                        }`}
+                      >
+                        {project.category === "personal" ? (
+                          <UserRound size={12} />
+                        ) : (
+                          <UsersRound size={12} />
+                        )}
+                        {project.categoryLabel}
+                      </span>
+
+                      {project.featured && (
+                        <span
+                          style={{
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-stone-900 text-stone-100"
+                        >
+                          <Sparkles size={10} className="text-amber-400" />
+                          FEATURED
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Date & Team Size Pill */}
+                    <div
+                      style={{
+                        fontFamily: "var(--font-jetbrains-mono), monospace",
+                      }}
+                      className="flex items-center gap-3 text-xs text-stone-600 bg-stone-100 px-3 py-1 rounded-lg border border-stone-200/80"
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar size={12} className="text-stone-500" />
+                        {project.date}
+                      </span>
+                      <span className="text-stone-300">|</span>
+                      <span className="inline-flex items-center gap-1 font-sans font-semibold text-stone-700">
+                        <Users size={12} className="text-stone-500" />
+                        {project.members}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Title & Subtitle */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mt-1">
+                    <div>
+                      <h3 className="text-xl font-bold text-stone-900 tracking-tight">
+                        {project.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm font-medium text-stone-600 mt-0.5">
+                        {project.subtitle}
+                      </p>
+                    </div>
+                    <p className="text-xs text-stone-500 font-medium mt-1 sm:mt-0 shrink-0">
+                      役割:{" "}
+                      <span className="text-stone-800 font-semibold">
+                        {project.role}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Tech Stack Badges */}
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {project.stack.map((tech) => (
+                      <span
+                        key={tech}
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                        }}
+                        className="px-2.5 py-0.5 bg-stone-100 border border-stone-200/90 text-stone-800 rounded text-xs font-medium"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Project Body: Description & Key Tasks */}
+                <div className="p-5 sm:p-6 space-y-4">
+                  <p className="text-sm text-stone-700 leading-relaxed">
+                    {project.description}
+                  </p>
+
+                  <div className="p-4 rounded-xl bg-white border border-stone-200/80">
+                    <p className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                      <BookOpen size={13} className="text-amber-800" />
+                      主な担当業務・実装機能
+                    </p>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-[13px] text-stone-700">
+                      {project.tasks.map((task) => (
+                        <li key={task} className="flex items-start gap-2">
+                          <CheckCircle2
+                            size={14}
+                            className="text-stone-700 shrink-0 mt-0.5"
+                          />
+                          <span className="leading-snug">{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Links Footer */}
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        fontFamily: "var(--font-jetbrains-mono), monospace",
+                      }}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-100 text-xs font-medium transition-colors"
+                    >
+                      <Github size={14} />
+                      <span>{project.github.replace("https://", "")}</span>
+                      <ExternalLink size={12} className="opacity-75" />
+                    </a>
+
+                    {project.domain && (
+                      <a
+                        href={project.domain}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                        }}
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-medium transition-colors"
+                      >
+                        <Globe size={14} className="text-emerald-700" />
+                        <span>
+                          {project.domain
+                            .replace("https://", "")
+                            .replace(/\/$/, "")}
+                        </span>
+                        <ExternalLink size={12} className="opacity-75" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Activities & Achievements */}
+        <section
+          id="achievements"
+          className="bg-white border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-xs scroll-mt-20"
+        >
+          <div className="flex items-center justify-between mb-6 pb-3 border-b border-stone-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
+                <Swords className="w-4 h-4" />
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-stone-900">
+                活動・実績
+              </h2>
+            </div>
+            <span
+              style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+              className="text-xs text-stone-400 tracking-wider uppercase"
+            >
+              04 / ACHIEVEMENTS
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ACHIEVEMENTS.map((item) => (
+              <div
+                key={item.title}
+                className="p-5 rounded-xl bg-stone-50/80 border border-stone-200/90 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-950/10 text-amber-950 border border-amber-900/20 text-xs font-bold">
+                      <Award size={13} className="text-amber-800" />
+                      {item.award}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-jetbrains-mono), monospace",
+                      }}
+                      className="text-xs text-stone-500 font-medium bg-white px-2.5 py-0.5 rounded border border-stone-200"
+                    >
+                      {item.date}
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-stone-900 text-base mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
