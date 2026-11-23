@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "グエン・ディン・アン・ヴー | フルスタックエンジニア ポートフォリオ",
+  title: "グエン・ディン・アン・ヴー | ポートフォリオ",
   description:
     "Next.js・React Native・Flutter・Node.js・Pythonを活用したWebおよびモバイルアプリケーション開発ポートフォリオ",
 };
@@ -50,7 +50,7 @@ export default function RootLayout({
                 グエン・ディン・アン・ヴー
               </span>
               <span className="hidden md:inline-block text-xs text-stone-500 border-l border-stone-300 pl-3">
-                Nguyen Dinh Anh Vu — Full-Stack Developer
+                Nguyen Dinh Anh Vu
               </span>
             </div>
 

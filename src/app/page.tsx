@@ -46,6 +46,11 @@ type Project = {
   domain?: string;
 };
 
+type SkillItem = {
+  name: string;
+  logo: string;
+};
+
 const PROJECTS: Project[] = [
   {
     id: "harmony-music",
@@ -218,25 +223,105 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const SKILL_GROUPS = [
+// Inline SVG Data URI for custom technical icons (AWS, REST API, LangChain, WebRTC)
+const AWS_SVG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="#252F3E" d="M18.6 32.8c0 1.2.1 2.2.4 2.9.3.7.6 1.5 1.1 2.3.2.3.2.6.2.8 0 .3-.2.7-.7 1l-2.2 1.5c-.3.2-.6.3-.9.3-.3 0-.7-.2-1-.5-.5-.5-.9-1.1-1.2-1.7-.3-.6-.6-1.3-.9-2.2-2.3 2.7-5.2 4.1-8.7 4.1-2.5 0-4.5-.7-5.9-2.1C-.6 37.8-1.3 35.9-1.3 33.5c0-2.6.9-4.7 2.8-6.3 1.9-1.6 4.4-2.4 7.6-2.4 1.1 0 2.2.1 3.4.3 1.2.2 2.4.5 3.7.8v-2.5c0-2.6-.5-4.4-1.6-5.4-1.1-1-3-1.5-5.6-1.5-1.2 0-2.4.1-3.7.4-1.3.3-2.5.7-3.7 1.2-.6.3-1 .4-1.2.5-.3.1-.5.1-.6.1-.5 0-.8-.4-.8-1.2v-1.9c0-.6.1-1.1.3-1.4.2-.3.6-.6 1.2-.9 1.2-.6 2.6-1.1 4.3-1.5 1.7-.4 3.5-.6 5.4-.6 4.1 0 7.1.9 9.1 2.8 1.9 1.9 2.9 4.7 2.9 8.5v10.3h-5.6zm-8.6 4.3c1.1 0 2.3-.2 3.5-.6 1.2-.4 2.2-1.1 3-2 .5-.6.9-1.3 1.1-2.1.2-.8.3-1.8.3-2.9v-1.4c-.9-.2-1.9-.4-2.9-.5-1-.1-2-.2-2.9-.2-2.1 0-3.6.4-4.6 1.2-1 .8-1.5 2-1.5 3.5 0 1.4.4 2.5 1.1 3.2.7.5 1.7.8 2.9.8zm28.1 3.7c-.6 0-1-.1-1.3-.3-.3-.2-.6-.7-.8-1.3L28.7 15c-.2-.7-.3-1.1-.3-1.4 0-.6.3-.9.9-.9h3.5c.6 0 1.1.1 1.3.3.3.2.5.7.7 1.3l5.2 20.5 4.8-20.5c.2-.7.4-1.1.7-1.3.3-.2.8-.3 1.4-.3h2.9c.6 0 1.1.1 1.4.3.3.2.5.7.7 1.3l4.9 20.8 5.4-20.8c.2-.7.5-1.1.7-1.3.3-.2.7-.3 1.3-.3h3.3c.6 0 .9.3.9.9 0 .2 0 .4-.1.7-.1.3-.1.6-.3 1l-7.5 24.2c-.2.7-.5 1.1-.8 1.3-.3.2-.8.3-1.3.3h-3.1c-.6 0-1.1-.1-1.4-.3-.3-.2-.5-.7-.7-1.4L47 20.3l-4.7 19.8c-.2.7-.4 1.1-.7 1.4-.3.2-.8.3-1.4.3h-2.1z" transform="translate(3 2) scale(0.9)"/><path fill="#FF9900" d="M56.2 49.4c-6.8 5-16.6 7.7-25.1 7.7-11.9 0-22.6-4.4-30.7-11.7-.6-.6-.1-1.4.7-.9 8.7 5.1 19.5 8.2 30.7 8.2 7.5 0 15.8-1.6 23.4-4.8 1.1-.5 2.1.8 1 1.5z"/><path fill="#FF9900" d="M59 46.2c-.9-1.1-5.8-.5-8-.3-.7.1-.8-.5-.2-.9 3.9-2.8 10.3-2 11.1-1.1.8 1-.2 7.7-4 10.9-.6.5-1.2.2-.9-.4.8-2.1 2.9-7.1 2-8.2z"/></svg>`
+  );
+
+const REST_API_SVG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#292524" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`
+  );
+
+const WEBRTC_SVG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>`
+  );
+
+const LANGCHAIN_SVG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1C3C3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4Z"/><path d="M16 10v1a4 4 0 0 1-8 0v-1"/><rect x="4" y="14" width="16" height="8" rx="3"/><path d="M9 18h6"/></svg>`
+  );
+
+const SKILL_GROUPS: {
+  category: string;
+  code: string;
+  icon: typeof Terminal;
+  skills: SkillItem[];
+}[] = [
   {
     category: "プログラミング言語",
     code: "LANGUAGES",
     icon: Terminal,
-    skills: ["TypeScript", "JavaScript", "Python", "PHP", "Dart", "Java", "C++"],
+    skills: [
+      {
+        name: "TypeScript",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+      },
+      {
+        name: "JavaScript",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+      },
+      {
+        name: "Python",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
+      },
+      {
+        name: "PHP",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+      },
+      {
+        name: "Dart",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",
+      },
+      {
+        name: "Java",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+      },
+      {
+        name: "C++",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg",
+      },
+    ],
   },
   {
     category: "フロントエンド・モバイル",
     code: "FRONTEND & MOBILE",
     icon: Code2,
     skills: [
-      "Next.js",
-      "React Native",
-      "Expo",
-      "Flutter",
-      "ElectronJS",
-      "Tailwind CSS",
-      "Bootstrap",
+      {
+        name: "Next.js",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
+      },
+      {
+        name: "React Native",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+      },
+      {
+        name: "Expo",
+        logo: "https://cdn.simpleicons.org/expo/1C1917",
+      },
+      {
+        name: "Flutter",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg",
+      },
+      {
+        name: "ElectronJS",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/electron/electron-original.svg",
+      },
+      {
+        name: "Tailwind CSS",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+      },
+      {
+        name: "Bootstrap",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
+      },
     ],
   },
   {
@@ -244,12 +329,34 @@ const SKILL_GROUPS = [
     code: "BACKEND & DB",
     icon: Layers,
     skills: [
-      "Node.js / Express",
-      "FastAPI",
-      "Laravel",
-      "MongoDB",
-      "MySQL",
-      "SQL Server",
+      {
+        name: "Node.js",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+      },
+      {
+        name: "ExpressJS",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg",
+      },
+      {
+        name: "FastAPI",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg",
+      },
+      {
+        name: "Laravel",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
+      },
+      {
+        name: "MongoDB",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg",
+      },
+      {
+        name: "MySQL",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+      },
+      {
+        name: "SQL Server",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/microsoftsqlserver/microsoftsqlserver-original.svg",
+      },
     ],
   },
   {
@@ -257,12 +364,42 @@ const SKILL_GROUPS = [
     code: "CLOUD, AI & TOOLS",
     icon: Cpu,
     skills: [
-      "AWS / Nginx",
-      "Git / GitHub",
-      "PyTorch / TensorFlow",
-      "LangChain / RAG",
-      "REST API",
-      "WebRTC / Socket.IO",
+      {
+        name: "AWS",
+        logo: AWS_SVG,
+      },
+      {
+        name: "Nginx",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg",
+      },
+      {
+        name: "Git / GitHub",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
+      },
+      {
+        name: "PyTorch",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg",
+      },
+      {
+        name: "TensorFlow",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg",
+      },
+      {
+        name: "LangChain / RAG",
+        logo: LANGCHAIN_SVG,
+      },
+      {
+        name: "Socket.IO",
+        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg",
+      },
+      {
+        name: "WebRTC",
+        logo: WEBRTC_SVG,
+      },
+      {
+        name: "REST API",
+        logo: REST_API_SVG,
+      },
     ],
   },
 ];
@@ -326,10 +463,6 @@ export default function Home() {
             </h1>
             <p className="text-sm text-stone-400 mt-1 font-medium">
               Nguyễn Đình Anh Vũ
-            </p>
-            <p className="text-xs text-stone-300 mt-3 pt-3 border-t border-stone-800 flex items-center gap-2">
-              <Code2 size={14} className="text-amber-500 shrink-0" />
-              <span>フルスタックエンジニア（Web・モバイル・AI）</span>
             </p>
           </div>
 
@@ -468,14 +601,14 @@ export default function Home() {
                 ベトナム・韓国IT通信大学 (VKU)
               </h3>
               <p className="text-xs text-stone-600 mt-0.5">
-                情報技術学士（専攻：情報技術）
+                情報技術学士
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-2.5 pt-1">
               <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
-                <p className="text-[11px] text-stone-500">学年</p>
-                <p className="text-xs font-bold text-stone-900 mt-0.5">大学4年生</p>
+                <p className="text-[11px] text-stone-500">専攻</p>
+                <p className="text-xs font-bold text-stone-900 mt-0.5">情報技術</p>
               </div>
               <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
                 <p className="text-[11px] text-stone-500">累積GPA</p>
@@ -593,55 +726,67 @@ export default function Home() {
 
           <div className="space-y-4 text-sm sm:text-base text-stone-700 leading-relaxed">
             <p>
-              現在大学4年生として、
+              これまでに、
               <strong className="font-semibold text-stone-900">
-                Next.js・React Native (Expo)・Flutter
+                Next.js・React Native (Expo)・Flutter・ElectronJS
               </strong>
-              を用いたWebおよびクロスプラットフォームモバイルアプリ開発に注力しています。フロントエンドだけでなく、
+              を用いたWeb・モバイル・デスクトップアプリケーションのフロントエンド開発から、
               <strong className="font-semibold text-stone-900">
                 Node.js (Express)・FastAPI・Laravel
               </strong>
-              を活用したバックエンド設計、AWSやNginxによるクラウドインフラ構築、さらに
-              <strong className="font-semibold text-stone-900">
-                AIモデル連携（RAGチャットボットや音楽生成AI）
-              </strong>
-              まで一貫して手掛けています。
+              およびリレーショナル／NoSQLデータベース（MySQL・SQL Server・MongoDB）によるバックエンドAPI設計・構築までを一貫して実践してきました。
             </p>
             <p>
-              これまでに個人・チームで複数の実践的なアプリケーションを企画から実装・デプロイまで完遂し、技術力だけでなく課題解決力やチーム開発におけるコミュニケーション力を培ってきました。ニアショア開発をはじめ多様なプロジェクトに積極的に貢献し、ユーザーに価値を届けるエンジニアを目指しています。
+              また、
+              <strong className="font-semibold text-stone-900">
+                AWS・Nginx
+              </strong>
+              を用いたクラウド環境への本番デプロイ、
+              <strong className="font-semibold text-stone-900">
+                WebRTC
+              </strong>
+              によるリアルタイム音声・映像通信、
+              <strong className="font-semibold text-stone-900">
+                LangChainとベクトル検索（RAG）
+              </strong>
+              を活用したAIチャットボットや
+              <strong className="font-semibold text-stone-900">
+                PyTorch
+              </strong>
+              による音楽生成モデルの統合、オンライン決済（VNPAY）連携など、要件定義・設計から実装・公開までの各工程を個人およびチーム開発で遂行してきました。
             </p>
           </div>
 
-          {/* Core Focus Pillars */}
+          {/* Core Executed Areas */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-5 border-t border-stone-100">
             <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
               <p className="text-xs font-bold text-stone-900">
-                Web & モバイル開発
+                マルチプラットフォーム実装
               </p>
               <p className="text-xs text-stone-600 mt-1">
-                Next.js / React Native / Flutter による直感的で高速なUI設計
+                Next.js / React Native / Flutter / ElectronJS によるWeb・モバイル・デスクトップUI構築
               </p>
             </div>
             <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
               <p className="text-xs font-bold text-stone-900">
-                バックエンド & クラウド
+                API設計・DB・クラウド運用
               </p>
               <p className="text-xs text-stone-600 mt-1">
-                Node.js / FastAPI / Laravel / AWS による堅牢なAPI・インフラ構築
+                Node.js / FastAPI / Laravel / MySQL / MongoDB と AWS・Nginx による本番環境構築
               </p>
             </div>
             <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70">
               <p className="text-xs font-bold text-stone-900">
-                AI・リアルタイム技術
+                AIモデル・外部サービス統合
               </p>
               <p className="text-xs text-stone-600 mt-1">
-                LangChain RAG・PyTorch音楽生成・WebRTC通信のシステム統合
+                LangChain RAG・PyTorch推論パイプライン・WebRTC・VNPAY決済のシステム組み込み
               </p>
             </div>
           </div>
         </section>
 
-        {/* Technical Skills Matrix */}
+        {/* Technical Skills Matrix with Logos */}
         <section
           id="skills"
           className="bg-white border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-xs scroll-mt-20"
@@ -672,7 +817,7 @@ export default function Home() {
                   className="p-4 rounded-xl bg-stone-50/80 border border-stone-200/80 flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-3.5">
                       <div className="flex items-center gap-2">
                         <IconComponent className="w-4 h-4 text-amber-800" />
                         <h3 className="font-bold text-sm text-stone-900">
@@ -689,16 +834,25 @@ export default function Home() {
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {group.skills.map((skill) => (
                         <span
-                          key={skill}
+                          key={skill.name}
                           style={{
                             fontFamily: "var(--font-jetbrains-mono), monospace",
                           }}
-                          className="px-2.5 py-1 bg-white border border-stone-200/90 rounded-md text-xs font-medium text-stone-800 shadow-2xs"
+                          className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-white hover:bg-stone-100/80 border border-stone-200/90 rounded-lg text-xs font-medium text-stone-800 shadow-2xs transition-colors"
                         >
-                          {skill}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={skill.logo}
+                            alt={`${skill.name} logo`}
+                            width={16}
+                            height={16}
+                            className="w-4 h-4 object-contain shrink-0"
+                            loading="lazy"
+                          />
+                          <span>{skill.name}</span>
                         </span>
                       ))}
                     </div>
